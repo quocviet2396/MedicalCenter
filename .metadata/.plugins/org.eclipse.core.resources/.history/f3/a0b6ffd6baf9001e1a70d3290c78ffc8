@@ -1,0 +1,5 @@
+package com.medicalcenterportal.apis;
+
+public class SpecialtyRestController {
+
+}

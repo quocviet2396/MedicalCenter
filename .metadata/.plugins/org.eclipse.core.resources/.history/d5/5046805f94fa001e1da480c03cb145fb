@@ -1,0 +1,291 @@
+<!doctype html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="keywords" content="Site keywords here">
+<meta name="description" content="">
+<meta name='copyright' content=''>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Title -->
+<title>Medical Center</title>
+
+<!-- Favicon -->
+<link rel="icon" href="/assets/img/favicon.png">
+
+<!-- Google Fonts -->
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap"
+	rel="stylesheet">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<!-- Nice Select CSS -->
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<!-- icofont CSS -->
+<link rel="stylesheet" href="/assets/css/icofont.css">
+<!-- Slicknav -->
+<link rel="stylesheet" href="/assets/css/slicknav.min.css">
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="/assets/css/owl-carousel.css">
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="/assets/css/datepicker.css">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="/assets/css/animate.min.css">
+<!-- Magnific Popup CSS -->
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+
+<!-- Medipro CSS -->
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+
+<style>
+.search-box {
+	position: relative;
+}
+
+.search-input {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 10px 15px;
+	font-size: 14px;
+	width: 250px;
+}
+
+.search-button {
+	background-color: #4caf50;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	border-radius: 4px;
+	margin-left: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+	background-color: #45a049;
+}
+</style>
+</head>
+<body>
+
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="loader">
+			<div class="loader-outter"></div>
+			<div class="loader-inner"></div>
+
+			<div class="indicator">
+				<svg width="16px" height="12px">
+                        <polyline id="back"
+						points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+                        <polyline id="front"
+						points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+                    </svg>
+			</div>
+		</div>
+	</div>
+	<!-- End Preloader -->
+
+	<!-- Header Area -->
+	<header th:replace="fragments/header_frontend :: header">&nbsp;</header>
+	<!-- End Header Area -->
+	<!-- Slider Area -->
+	<!-- Header slider -->
+	<div class="breadcrumbs overlay">
+		<div class="container">
+			<div class="bread-inner">
+				<div class="row">
+					<div class="col-12">
+						<h2>Meet Our Qualified Doctors</h2>
+						<ul class="bread-list">
+							<li><a th:href="@{/}">Home</a></li>
+							<li><i class="icofont-simple-right"></i></li>
+							<li class="active">DoctorInformation</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End header slider -->
+
+	<!-- Main -->
+
+	<section id="team" class="team section single-page">
+		<div class="container">
+
+			<div class="main-sidebar">
+				<div class="widget search-widget">
+					<div class="card">
+						<div class="card-body">
+							<form th:action="@{/doctorinfosgrid/filter}"
+								class="search-form form-inline">
+								<div class="input-group search-box">
+									<select name="specialtyId"
+										class="form-control form-control-solid w-250px ps-15 search-input">
+										<option value="">All Specialties</option>
+										<option th:each="specialty : ${listSpecialties}"
+											th:value="${specialty.id}"
+											th:text="${specialty.nameSpecialty}"></option>
+									</select>
+									<button type="submit" class="btn btn-primary search-button">
+										Filter</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<form th:action="@{${moduleURL} + '/page/1'}"
+								class="search-form form-inline">
+								<div class="input-group search-box">
+									<input type="text" name="searchText" th:value="${searchText}"
+										data-kt-customer-table-filter="search"
+										class="form-control form-control-solid w-250px ps-15 search-input"
+										placeholder="Search here..." />
+									<button type="submit" class="btn btn-primary search-button">
+										Search</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="row">
+				<div class="col-lg-4 col-md-6 col-12"
+					th:each="doctorInfo : ${listDoctorInfos}">
+
+					<div class="single-team">
+						<div class="t-head">
+							<img th:src="@{/files/} + ${doctorInfo.photo}"
+								style="width: 360px; height: 360px;" alt="#">
+							<div class="t-icon">
+								<a th:href="@{#}" class="btn">Get Appointment</a>
+							</div>
+						</div>
+						<div class="t-bottom">
+							<p th:text="${doctorInfo.specialty.nameSpecialty}"></p>
+							<h2>
+								<a
+									th:href="@{/doctorinfosgrid/details/{id}(id=${doctorInfo.id})}"
+									th:text="${doctorInfo.title}"></a>
+							</h2>
+						</div>
+					</div>
+					<!--begin::Paginate-->
+					<div th:if="${totalPages > 1}">
+						<ul class="pagination">
+							<li
+								th:class="${currentPage > 1 ? 'page-item previous' : 'page-item previous disabled'}">
+								<a
+								th:href="@{${moduleURL} + '/page/' + ${currentPage - 1} + ${queryParams}}"
+								class="page-link"><i class="previous"></i></a>
+							</li>
+							<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+								th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+								<a th:href="@{${moduleURL} + '/page/' + ${i} + ${queryParams}}"
+								class="page-link" th:text="${i}"></a>
+							</li>
+							<li
+								th:class="${currentPage < totalPages ? 'page-item next' : 'page-item next disabled' }">
+								<a
+								th:href="@{${moduleURL} + '/page/' + ${currentPage + 1} + ${queryParams}}"
+								class="page-link"><i class="next"></i></a>
+							</li>
+						</ul>
+					
+					<!--end::Paginate-->
+				</div>
+				</div>
+
+				<!--begin::Paginate-->
+					<div th:if="${totalPages > 1}">
+						<ul class="pagination">
+							<li
+								th:class="${currentPage > 1 ? 'page-item previous' : 'page-item previous disabled'}">
+								<a
+								th:href="@{${moduleURL} + '/page/' + ${currentPage - 1} + ${queryParams}}"
+								class="page-link"><i class="previous"></i></a>
+							</li>
+							<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+								th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+								<a th:href="@{${moduleURL} + '/page/' + ${i} + ${queryParams}}"
+								class="page-link" th:text="${i}"></a>
+							</li>
+							<li
+								th:class="${currentPage < totalPages ? 'page-item next' : 'page-item next disabled' }">
+								<a
+								th:href="@{${moduleURL} + '/page/' + ${currentPage + 1} + ${queryParams}}"
+								class="page-link"><i class="next"></i></a>
+							</li>
+						</ul>
+					
+					<!--end::Paginate-->
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- End slider -->
+	<!-- Footer Area -->
+	<footer th:replace="fragments/footer_frontend :: footer"> </footer>
+	<!--/ End Footer Area -->
+
+	<!-- jquery Min JS -->
+	<script src="/assets/js/jquery.min.js"></script>
+	<!-- jquery Migrate JS -->
+	<script src="/assets/js/jquery-migrate-3.0.0.js"></script>
+	<!-- jquery Ui JS -->
+	<script src="/assets/js/jquery-ui.min.js"></script>
+	<!-- Easing JS -->
+	<script src="/assets/js/easing.js"></script>
+	<!-- Color JS -->
+	<script src="/assets/js/colors.js"></script>
+	<!-- Popper JS -->
+	<script src="/assets/js/popper.min.js"></script>
+	<!-- Bootstrap Datepicker JS -->
+	<script src="/assets/js/bootstrap-datepicker.js"></script>
+	<!-- Jquery Nav JS -->
+	<script src="/assets/js/jquery.nav.js"></script>
+	<!-- Slicknav JS -->
+	<script src="/assets/js/slicknav.min.js"></script>
+	<!-- ScrollUp JS -->
+	<script src="/assets/js/jquery.scrollUp.min.js"></script>
+	<!-- Niceselect JS -->
+	<script src="/assets/js/niceselect.js"></script>
+	<!-- Tilt Jquery JS -->
+	<script src="/assets/js/tilt.jquery.min.js"></script>
+	<!-- Owl Carousel JS -->
+	<script src="/assets/js/owl-carousel.js"></script>
+	<!-- counterup JS -->
+	<script src="/assets/js/jquery.counterup.min.js"></script>
+	<!-- Steller JS -->
+	<script src="/assets/js/steller.js"></script>
+	<!-- Wow JS -->
+	<script src="/assets/js/wow.min.js"></script>
+	<!-- Magnific Popup JS -->
+	<script src="/assets/js/jquery.magnific-popup.min.js"></script>
+	<!-- Counter Up CDN JS -->
+	<script
+		src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="/assets/js/bootstrap.min.js"></script>
+	<!-- Main JS -->
+	<script src="/assets/js/main.js"></script>
+
+	<!--begin::Javascript-->
+	<div th:replace="fragments/partial :: global_script"></div>
+
+	<!--end::Javascript-->
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký khám</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<!-- Nice Select CSS -->
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<!-- icofont CSS -->
+<link rel="stylesheet" href="/assets/css/icofont.css">
+<!-- Slicknav -->
+<link rel="stylesheet" href="/assets/css/slicknav.min.css">
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="/assets/css/owl-carousel.css">
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="/assets/css/datepicker.css">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="/assets/css/animate.min.css">
+<!-- Magnific Popup CSS -->
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+
+<!-- Medipro CSS -->
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container1 {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        
+        select,
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            width: 150px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+         
+    </style>
+</head>
+<body>
+	<header th:replace="fragments/header_frontend :: header">&nbsp;</header>
+						<!-- SignIn-Out -->
+						<div class="col-lg-2 col-12">
+							<div class="get-quote">
+							
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+	</header>
+<div class="container1">
+    <h1 class="page-title">Get appointment</h1>
+    <form action="/appointmentUserLogin/newAppointment" th:object="${appointment}" method="post" >
+     <div hidden>
+            <label for="doctor">Patient:</label>
+            <input type="text" id="doctor" name="pattientId" th:value="${appointment.patientUser.id}" />
+        </div>
+		 <div hidden>
+            <label for="doctor">Doctor:</label>
+            <input type="text" id="doctor" name="doctorId" th:value="${appointment.doctor.id}"  />
+        </div>
+       <div class="form-group">
+            <label for="doctor">Doctor:</label>
+            <input type="text" id="doctor" class="form-control" th:value="${appointment.doctor.fullName}" readonly />
+        </div>
+        <div hidden>
+            <label for="appointmentDate">Appointment date:</label>
+            <input type="date" id="appointmentDate" th:value="${appointment.appointmentDate}" name="appointmentDate"  />
+        </div>
+         <div class="form-group">
+            <label for="appointmentDate">Appointment date:</label>
+            <input type="date" id="appointmentDate" class="form-control" th:value="${appointment.appointmentDate}" readonly />
+        </div>
+
+       <div class="form-group" hidden>
+    <label for="specialtyId">Chuyên khoa: </label>
+  
+      
+        <!-- Thêm các option từ danh sách specialties -->
+       <input type="text"id="specialties" name="specialtyId" th:value="${appointment.specialties.id}"  />
+  
+</div>
+<div class="form-group" >
+    <label for="specialtyId">Specialty: </label>
+  
+      
+        <!-- Thêm các option từ danh sách specialties -->
+       <input type="text" id="specialties"  class="form-control" name="specialtyId" th:value="${appointment.specialties.nameSpecialty}"   readonly/>
+  
+</div>
+
+
+        <div hidden>
+            <label for="appointmentPeriod">Buổi khám:</label>
+             <input type="text" id="specialties" name="appointmentPeriod"class="form-control" th:field="${appointment.appointmentPeriod}" />
+          
+        </div>
+  <div class="form-group">
+            <label for="appointmentPeriod">Appointment period:</label>
+             <input type="text" id="specialties" name="appointmentPeriod"class="form-control" th:field="${appointment.appointmentPeriod}" readonly/>
+          
+        </div>
+        <div>
+            <label for="symptoms">Symptom:</label>
+            <textarea id="symptoms" th:field="${appointment.symptoms}" ></textarea>
+        </div>
+        <button type="submit">Send</button>
+    </form>
+</div>
+	<footer th:replace="fragments/footer_frontend :: footer"> </footer>
+
+</body>
+
+
+
+</html>

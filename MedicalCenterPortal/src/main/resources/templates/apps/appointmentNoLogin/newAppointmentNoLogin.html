@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<link rel="stylesheet" href="/assets/css/custom.css">
+<link rel="stylesheet" href="/assets/css/main.min.css">
+<link rel="stylesheet" href="/assets/css/plupin.min.css">
+
+    </head>
+    <body>
+    <div id="success-message" style="display: none;">
+   Information has been successfully registered!
+	</div>
+		<div>
+    		<a href="/" class="back-to-home-link">Return home</a>	
+		</div>
+        <div id="ctl00_divCenter" class="middle-fullwidth">
+
+            <section class="booking-examination"> 
+                <div class="container">
+                    <div class="Module Module-176">
+                        <div class="ModuleContent">
+                            <div class="section-title">
+                                <span>Get Appointment</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row border"> 
+                        <div class="col w-full lg:w-4/12">
+                            <div class="item-bg"> 
+                                <div class="content">
+                                    <div class="Module Module-177">
+                                        <div class="ModuleContent">
+    <strong>Note:</strong>
+    <p>Appointments are effective only after receiving official confirmation from the Hospital Clinic.</p>
+    <p>Customers are kindly requested to provide accurate information for the best service. In case of incorrect email & phone information, appointment confirmation will not be valid.</p>
+    <p>If you use the online appointment booking service, please book at least 24 hours in advance before coming for examination.</p>
+    <p>In case of emergency or suspicion of dangerous symptoms, please GO DIRECTLY to the Clinic or the nearest medical center for timely treatment.</p>
+</div>
+
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="col w-full lg:w-8/12"> 
+                            <div class="medical-booking" id="">
+                                <div class="Module Module-210">
+                                    <div class="ModuleContent">
+
+                                        <div class="container">
+                                            
+                                            <div class="medical-form-wrapper">
+                                               
+                                                <div class="Module Module-161">
+                                                    <div class="ModuleContent">
+                                                        <div class="text">Get Appointment</div>
+                                                        <div class="caption">vui
+                                                            lòng điền thông tin
+                                                            vào form bên dưới để
+                                                            đẩ đăng ký khám bệnh
+                                                            theo yêu cầu
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <form action="/appointments/save/order" th:object="${appointment}"  id="my-form" method="post"onsubmit="return validateForm()">
+                                                    <div class="Module Module-160">
+                                                        <div class="ModuleContent">
+                                                            <div id=""class="wrap-form">
+    
+                                                                <div>
+                                                                    <div class="row">
+                                                                        <div class="form-group qtext require col w-full lg:w-1/2">
+                                                                        	<p> Name:</p>	
+                                                                            <input th:field="*{fullName}" name=""type="text"id=""placeholder="Name" required>
+                                                                           
+                                                                        </div>
+                                                                        <div class="form-group qtext require col w-full lg:w-1/2">
+                                                                        	<p> Email:</p>	
+                                                                            <input th:field="*{email}" type="text" name="email" id="emailInput" placeholder="Email" required>
+                                                                        </div>
+                                                                        <div class="form-group qdate require col w-full lg:w-1/2">
+																			<p> Birth day:</p>			
+                                                                           <input  th:field="*{birthday}" type="date" id="date-input" name="birthdayString" placeholder="Birth day" required>
+                                                                        	
+                                                                        </div>
+                                                                        <div class="form-group qtext require col w-full lg:w-1/2">
+                                                                        <p> Phone number:</p>	
+                                                                            <input th:field="*{phoneNumber}" type="text"id=""placeholder="phone number" required>
+                                                                        </div>
+                                                                        <div class="form-group qtext require col w-full">
+																		    <select th:field="*{gender}" required>
+																		        <option value="">Gender</option>
+																		        <option th:each="gender : ${T(com.medicalcenter.enums.Gender).values()}"
+																		                th:value="${gender}"
+																		                th:text="${gender}"
+																		        ></option>
+																		    </select>
+																		</div>
+                                                                        <div
+                                                                            class="form-group qtext require col w-full ">
+                                                                            <input th:field="*{address}" type="text"id=""placeholder="Address" required>
+                                                                        </div>
+                                                                        <div class="form-group qtext require col w-full">
+																		    <select th:field="*{specialty.id}" required>
+																		        <option value="" >Specialty</option>
+																		        <option th:each="specialty : ${specialties}"
+																		                th:value="${specialty.id}"
+																		                th:text="${specialty.nameSpecialty}">
+																		        </option>
+																		    </select>
+																		</div>
+                                                                        <div class="form-group qdate require col w-full lg:w-1/2">
+                                                                           <p>Appointment date</p>
+                                                                            <input th:field="*{appointmentDate}" id="date-input2"  class="riTextBox riEnabled" placeholder="Appointmetn date" type="date" required>
+                                                                           
+                                                                        </div>
+    
+                                                                        
+                                                                        <div class="form-group qtext require col w-full lg:w-1/2">
+                                                                         <p>Appointment time</p>
+																		    <select th:field="*{appointmentPeriod}" required>
+																		        <option value="">Period</option>
+																		        <option th:each="period : ${T(com.medicalcenter.enums.Period).values()}"
+																		                th:value="${period}"
+																		                th:text="${period}">
+																		        </option>
+																		    </select>
+																		</div>
+                                                                         <div
+                                                                            class="form-group qparagraph require col w-full">
+                                                                            <textarea th:field="*{symptoms}" 
+                                                                                name=""
+                                                                                rows="5"
+                                                                                cols="20"
+                                                                                id=""
+                                                                                placeholder="Symptoms" required></textarea>
+                                                                          
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        class="form-group frm-btnwrap">
+                                                                        <label
+                                                                            class="label">&nbsp;</label>
+                                                                        <div
+                                                                            class="frm-btn">
+                                                                            <input type="submit" value="Gửi">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+    
+                                                                </div>
+    
+                                                            </div>
+    
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                             
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+                    </div> 
+                </div>
+            </section>
+
+        </div>
+    </body>
+  
+    <script>
+      
+      /* flatpickr("#date-input", {
+    	  dateFormat: "Y-m-d", // Định dạng ngày-tháng-năm giống với LocalDate
+    	    enableTime: false,
+    	    altInput: true,
+    	    altFormat: "j F, Y",
+    	    locale: "vi"
+        });
+        flatpickr("#date-input2",  {
+        	dateFormat: "Y-m-d", // Định dạng ngày-tháng-năm giống với LocalDate
+            enableTime: false,
+            altInput: true,
+            altFormat: "j F, Y",
+            locale: "vi"
+        }); */
+       
+
+            // Các kiểm tra và xử lý khác ở đây...
+
+            // Nếu form đã được submit thành công, gọi hàm hiển thị thông báo thành công
+      
+
+       
+
+        function validateForm() {  
+        var emailInput = document.getElementById("emailInput");
+        var email = emailInput.value;
+
+        var dateInput = document.getElementById("date-input");
+        var birthday = dateInput.value;
+        if (!birthday) {
+        alert("Vui lòng chọn ngày sinh.");
+        return false; // Ngăn form được submit
+        }
+        var dateInput2 = document.getElementById("date-input2");
+        var appointmentdate=dateInput2.value;
+        if(!appointmentdate){
+            alert("Vui lòng chọn ngày khám");
+            return false;
+        }
+        // Kiểm tra định dạng email bằng biểu thức chính quy
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            alert("Địa chỉ email không hợp lệ");
+            return false; // Ngăn form được submit
+        }
+
+        // Chuyển đổi giá trị ngày sinh thành đối tượng Date
+        var selectedDate = new Date(birthday);
+        var utcCurrentDate = new Date();
+
+     // Tính toán sự chênh lệch múi giờ giữa múi giờ UTC và múi giờ của Việt Nam (UTC+7)
+     var vietnamTimeOffsetInMinutes = 7 * 60;
+     var vietnamTimeOffsetInMilliseconds = vietnamTimeOffsetInMinutes * 60 * 1000;
+
+     // Tạo một đối tượng Date mới dựa trên ngày giờ hiện tại và sự chênh lệch múi giờ
+     var CurrentDate = new Date(utcCurrentDate.getTime() + vietnamTimeOffsetInMilliseconds);
+
+        var selectedDate2= new Date(appointmentdate);
+        // So sánh ngày sinh với ngày hiện tại
+        if(currentDate == null){
+            alert ("Vui lòng chọn ngày");
+            return false;
+        }
+        if (selectedDate > currentDate) {
+            alert("Ngày sinh không được lớn hơn ngày hiện tại");
+            return false; // Ngăn form được submit
+        }
+        if(selectedDate2<currentDate){
+            alert("Ngày khám không được nhỏ hơn ngày hiện tại");
+            return false;
+        }
+        
+           
+
+            // Các kiểm tra và xử lý khác ở đây...
+            // Nếu form không hợp lệ, đặt isValid = false;
+
+           
+		
+            // Trả về giá trị isValid để cho phép hoặc ngăn chặn form được submit
+            return true;
+       // Cho phép form được submit
+    }
+    </script>
+
+</html>

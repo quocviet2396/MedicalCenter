@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách bác sĩ</title>
+    <!-- Import CSS hoặc Bootstrap nếu cần -->
+</head>
+<body>
+    <h1>Danh sách bác sĩ</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                 <th>Hình ảnh</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>Chuyên khoa</th>
+             
+                <!-- Thêm các cột khác nếu cần -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sử dụng vòng lặp để hiển thị danh sách bác sĩ -->
+            <tr th:each="doctor, iterStat : ${doctors}">
+                <td th:text="${iterStat.index + 1}"></td>
+                <td>
+                    <img th:src="@{/files/} + @{${doctor.photo}}" width="100" height="100" alt="Hình ảnh bác sĩ"/>
+                </td>
+                <td th:text="${doctor.fullName}"></td>
+                <td th:text="${doctor.email}"></td>
+                <td th:text="${doctor.specialty.nameSpecialty}"></td>
+               
+                <!-- Thêm các cột khác nếu cần -->
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

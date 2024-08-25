@@ -1,0 +1,113 @@
+package com.medicalcenterportal.services;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.medicalcenter.entities.ScheduleItem;
+import com.medicalcenter.entities.User;
+import com.medicalcenter.enums.Period;
+import com.medicalcenterportal.repository.ScheduleItemRepository;
+
+@Service
+public class ScheduleItemServiceImlp implements ScheduleItemService {
+
+    @Autowired
+    private ScheduleItemRepository scheduleItemRepository;
+
+    @Override
+    public void saveScheduleItem(ScheduleItem scheduleItem) {
+        // Lấy thông tin của bác sĩ và ngày làm việc từ scheduleItem
+        User doctor = scheduleItem.getDoctor();
+        LocalDate workDate = scheduleItem.getWorkdates();
+        String room = scheduleItem.getRoom();
+        Period appointmentPeriod = scheduleItem.getAppointmentPeriod();
+
+        // Kiểm tra xem đã tồn tại lịch làm việc của bác sĩ tương ứng trong ngày đã chọn hay chưa
+        boolean isExistingScheduleItem = scheduleItemRepository.existsByDoctorAndWorkdates(doctor, workDate);
+
+        if (isExistingScheduleItem) {
+            // Nếu đã tồn tại lịch làm việc của bác sĩ trong ngày đã chọn, kiểm tra xem room có trùng không
+            boolean isRoomOccupied = scheduleItemRepository.existsByDoctorAndWorkdatesAndRoom(doctor, workDate, room);
+            if (isRoomOccupied) {
+            	 boolean isPeriodOccupied = scheduleItemRepository.existsByDoctorAndWorkdatesAndPeriod(doctor, workDate, appointmentPeriod);
+			}
+            if (isRoomOccupied) {
+                // Nếu room đã được sử dụng trong ngày đã chọn, in ra thông báo
+                throw new RuntimeException("Room " + room + " is already occupied on " + workDate + " for doctor " + doctor.getFullName());
+            }
+        }
+
+        // Nếu không có lịch làm việc nào của bác sĩ trong ngày đã chọn hoặc room chưa được sử dụng, lưu scheduleItem
+        scheduleItemRepository.save(scheduleItem);
+    }
+
+
+    @Override
+    public ScheduleItem getScheduleItemById(Long id) {
+        return scheduleItemRepository.findById(id).orElse(null);
+    }
+
+   
+
+    public List<ScheduleItem> getAllScheduleItems() {
+        List<ScheduleItem> scheduleItems = scheduleItemRepository.findAll();
+        LocalDate currentDate = LocalDate.now();
+        for (ScheduleItem scheduleItem : scheduleItems) {
+			if(scheduleItem.getWorkdates() == null) {
+				scheduleItem.setWorkdates(currentDate);
+			}
+		}
+        // Sắp xếp danh sách theo tên bác sĩ và sau đó theo workdates
+        Collections.sort(scheduleItems, 
+            Comparator.comparing((ScheduleItem item) -> item.getDoctor().getFullName())
+                      .thenComparing(item -> item.getWorkdates()));
+
+        return scheduleItems;
+    }
+
+
+
+    @Override
+    public List<ScheduleItem> getScheduleItemsByDoctorId(Long doctorId) {
+        return scheduleItemRepository.findByDoctorId(doctorId);
+    }
+
+    @Override
+    public void updateScheduleItem(ScheduleItem scheduleItem) {
+        if (scheduleItem.getId() != null) {
+            scheduleItemRepository.save(scheduleItem);
+        } else {
+            throw new IllegalArgumentException("ScheduleItem ID cannot be null");
+        }
+    }
+
+	@Override
+	public List<ScheduleItem> getScheduleItemsByDoctor(User doctor) {
+		List<ScheduleItem> scheduleItems = scheduleItemRepository.findByDoctor(doctor);
+	    
+	    // Sắp xếp danh sách theo trường workdates
+	    Collections.sort(scheduleItems, (a, b) -> a.getWorkdates().compareTo(b.getWorkdates()));
+	    
+	    return scheduleItems;
+	}
+
+
+	@Override
+	public List<ScheduleItem> getScheduleItemsByWorkdate(LocalDate workdate) {
+		// TODO Auto-generated method stub
+		   return scheduleItemRepository.findByWorkdates(workdate);
+	}
+
+
+	@Override
+	public List<ScheduleItem> getScheduleItemsByWorkdateAndSpecialty(LocalDate workdate, String specialty) {
+		// TODO Auto-generated method stub
+		return scheduleItemRepository.findByWorkdateAndDoctorSpecialtyNameSpecialty(workdate, specialty);
+	}
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký thành công</title>
+    <style>
+  /* Căn giữa nội dung */
+.confirmation {
+    text-align: center;
+    margin-top: 50px; /* Khoảng cách từ phần header xuống nội dung */
+}
+
+/* Style cho tiêu đề */
+.confirmation h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333; /* Màu chữ đen */
+}
+
+/* Style cho nội dung */
+.confirmation p {
+    font-size: 18px;
+    color: #666; /* Màu chữ xám */
+    margin-top: 20px; /* Khoảng cách từ tiêu đề xuống nội dung */
+}
+
+/* Style cho footer */
+footer {
+    background-color: #f8f9fa; /* Màu nền xám nhạt */
+    padding: 20px 0; /* Khoảng cách phần nội dung footer */
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Style cho link trong footer */
+footer a {
+    color: #007bff; /* Màu chữ xanh */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect cho link trong footer */
+footer a:hover {
+    color: #0056b3; /* Màu chữ xanh đậm khi hover */
+}
+  
+    
+    </style>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<!-- Nice Select CSS -->
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<!-- icofont CSS -->
+<link rel="stylesheet" href="/assets/css/icofont.css">
+<!-- Slicknav -->
+<link rel="stylesheet" href="/assets/css/slicknav.min.css">
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="/assets/css/owl-carousel.css">
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="/assets/css/datepicker.css">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="/assets/css/animate.min.css">
+<!-- Magnific Popup CSS -->
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+
+<!-- Medipro CSS -->
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+<header th:replace="fragments/header_frontend :: header">&nbsp;</header>
+    <div class="confirmation">
+        <h2>Đăng ký thành công!</h2>
+        <p>Cảm ơn bạn đã đăng ký. Thông tin của bạn đã được ghi nhận.</p>
+    </div>
+    <footer th:replace="fragments/footer_frontend :: footer"> </footer>
+</body>
+</html>

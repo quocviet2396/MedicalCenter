@@ -1,0 +1,301 @@
+package com.medicalcenterportal.controllers;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.medicalcenter.dto.MedicalAndMedicineRecordDTO;
+import com.medicalcenter.entities.Appointment;
+import com.medicalcenter.entities.AppointmentNoLogin;
+import com.medicalcenter.entities.FollowUpAppointment;
+import com.medicalcenter.entities.ScheduleItem;
+import com.medicalcenter.entities.Specialty;
+import com.medicalcenter.entities.User;
+import com.medicalcenter.enums.Period;
+import com.medicalcenter.exceptions.UserNotFoundException;
+import com.medicalcenter.repositories.UserRepository;
+import com.medicalcenter.services.MedicineRecordService;
+import com.medicalcenter.services.UserService;
+import com.medicalcenterportal.repository.AppointmentRepository;
+import com.medicalcenterportal.repository.ScheduleItemRepository;
+import com.medicalcenterportal.services.AppointmentUserLogin;
+import com.medicalcenterportal.services.FollowUpAppointmentService;
+import com.medicalcenterportal.services.ScheduleItemService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.ui.Model;
+
+
+
+@Controller
+@RequestMapping("/appointmentUserLogin")
+public class AppointmentUserLoginController {
+	@Autowired
+	AppointmentUserLogin appointmentUserLogin;
+	@Autowired 
+	private AppointmentRepository appointmentRepository;
+	@Autowired 
+	private AppointmentUserLogin appointmentUserLoginService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired 
+	private ScheduleItemRepository  scheduleItemRepository;
+	@Autowired
+	private ScheduleItemService scheduleItemService;
+	@Autowired
+	private FollowUpAppointmentService followUpAppointmentService;
+	@Autowired 
+	private UserService userService;
+	@Autowired
+	private MedicineRecordService medicineRecordService;		
+	
+
+	@GetMapping("/list")
+	public String listAppointments(Model model, Principal principal) {
+	    // Lấy tên người dùng đang đăng nhập
+	    String username = principal.getName();
+
+	    // Kiểm tra vai trò của người dùng đăng nhập
+	    boolean isAdmin = false; // Giả sử mặc định là người dùng không phải là ADMIN
+	    boolean isDoctor = false; // Giả sử mặc định là người dùng không phải là bác sĩ
+	    for (GrantedAuthority authority : ((Authentication) principal).getAuthorities()) {
+	        if (authority.getAuthority().equals("ADMIN")) {
+	            isAdmin = true;
+	            break;
+	        } else if (authority.getAuthority().equals("DOCTOR")) {
+	            isDoctor = true;
+	            break;
+	        }
+	    }
+
+	    List<Appointment> appointments;
+	    LocalDate currentDate = LocalDate.now();
+	    if (isAdmin) {
+	        // Nếu người dùng có vai trò ADMIN, lấy tất cả các cuộc hẹn
+	        appointments = appointmentUserLoginService.getAllAppointments();
+	    } else if (isDoctor) {
+	        // Nếu người dùng có vai trò là DOCTOR, lấy các cuộc hẹn mà bác sĩ đó được phân công
+	        User doctor = userRepository.getUserByEmail(username);
+	        appointments = appointmentUserLoginService.getAppointmentsByDoctor(doctor, currentDate);
+	        appointments = appointmentUserLoginService.sortAppointmentsByCreateOn(appointments);
+	    } else {    
+	        // Nếu người dùng có vai trò PATIENT, lấy các cuộc hẹn của người dùng đó
+	        User user = userRepository.getUserByEmail(username);
+	        appointments = appointmentUserLoginService.getAppointmentsByPatientUser(user);
+	        // Sắp xếp danh sách các cuộc hẹn theo thời gian tạo mới
+	        appointments.sort(Comparator.comparing(Appointment::getCreateOn).reversed());
+	    }
+
+	    // Thêm danh sách cuộc hẹn vào model
+	    model.addAttribute("appointments", appointments);
+
+	    return "apps/appointmentuserlogin/listAppointmentUserLogin";
+	}
+
+
+
+
+	
+	   @GetMapping("/new")
+	    public String showNewAppointmentForm(Model model) {
+	        model.addAttribute("appointment", new Appointment());
+	        List<Specialty> specialties = appointmentRepository.findAllSpecialties();
+	        model.addAttribute("specialties", specialties);
+	        return "/apps/appointmentuserlogin/newAppointmentUserLogin";
+	    }
+	   @PostMapping("/save")
+	   public String createAppointment(@RequestParam(value = "doctorId", required = false) Long doctorId,
+	                                                        @RequestParam("appointmentDate") LocalDate appointmentDate,
+	                                                        @RequestParam("appointmentPeriod") Period appointmentPeriod,
+	                                                        @RequestParam("specialtyId") Long specialtyId,
+	                                                        @RequestParam("symptoms") String symptoms, Model model) {
+	       // Lấy thông tin về người dùng đăng nhập từ Spring Security
+	       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	       String username = authentication.getName();
+	       
+	       // Lấy thông tin về patientUser từ username
+	       User patientUser = userRepository.findByEmail(username);
+	       
+	       
+	       
+	       // Lấy đối tượng Specialty từ specialtyId
+	       Specialty specialty =null;
+		    if (specialtyId != null) {
+		        specialty = appointmentRepository.findSpecialtyById(specialtyId);
+		        if (specialty == null) {
+		            throw new IllegalArgumentException("Specialty not found");
+		        }
+		    }
+		    long appointmentCount = appointmentRepository.countByPatientUserAndCreateOn(patientUser,LocalDate.now());
+
+		    // Giới hạn số lượng cuộc hẹn cho mỗi người dùng
+		    if (appointmentCount >=1) {
+		        model.addAttribute("error", "Bạn chỉ được gửi một cuộc hẹn mỗi ngày.");
+		        return "error/error"; // Thay 'error_view' bằng tên view bạn muốn hiển thị thông báo lỗi
+		    }else {
+		        Appointment appointment = new Appointment();
+			       appointment.setSpecialties(specialty);
+			       appointment.setPatientUser(patientUser);
+			       appointment.setAppointmentDate(appointmentDate);
+			       appointment.setAppointmentPeriod(appointmentPeriod);
+			       appointment.setSymptoms(symptoms);
+
+			       // Lưu đối tượng Appointment vào cơ sở dữ liệu
+			       appointmentRepository.save(appointment);
+
+			       // Chuyển hướng sang trang listAppointmentUserLogin sau khi tạo cuộc hẹn thành công
+			       return "apps/appointmentNoLogin/dangkysuccess";
+			}
+	       // Tạo đối tượng Appointment và gán các giá trị
+	       
+	  
+	   }
+
+
+
+	// Hiển thị biểu mẫu cập nhật cuộc hẹn
+	   @GetMapping("/edit/{id}")
+	   public String showEditAppointmentForm(@PathVariable("id") Long id, Model model) {
+	       // Lấy thông tin cuộc hẹn từ ID
+	       Appointment appointment = appointmentUserLogin.getAppointmentById(id)
+	               .orElseThrow(() -> new IllegalArgumentException("Invalid appointment id: " + id));
+	       model.addAttribute("appointment", appointment);
+
+	       // Lấy thông tin về ngày, buổi hẹn và chuyên khoa từ Appointment
+	       LocalDate appointmentDate = appointment.getAppointmentDate();
+	       Period appointmentPeriod = appointment.getAppointmentPeriod();
+	       Specialty specialty = appointment.getSpecialties();
+
+	       // Lấy danh sách các bác sĩ có lịch làm việc vào ngày, buổi và thuộc chuyên khoa đã chọn
+	       List<User> doctors = scheduleItemRepository.findDoctorsByWorkdateAndAppointmentPeriodAndSpecialty(appointmentDate, appointmentPeriod, specialty.getId());
+	       model.addAttribute("doctors", doctors);
+	       return "/apps/appointmentuserlogin/editAppointmentUserLogin";
+	   }
+
+
+	   @PostMapping("/update")
+	    public String updateAppointment(HttpServletRequest request, @ModelAttribute("appointment") Appointment appointment, Model model) {
+	        String idStr = request.getParameter("id");
+	        Long appointmentId = Long.valueOf(idStr);
+	        
+	        appointmentUserLoginService.updateAppointment(appointmentId, appointment);
+	        return "redirect:/appointmentUserLogin/list";
+	    }
+	   @GetMapping("/delete/{id}")
+	    public String deleteAppointment(@PathVariable("id") Long id) {
+	        appointmentUserLoginService.deleteAppointment(id);
+	        return "redirect:/appointmentUserLogin/list";
+	    }
+	   @GetMapping("/patient/{patientId}")
+	   public String patientDetails(@PathVariable("patientId") Long patientId, Model model) throws UserNotFoundException {
+	       // Lấy thông tin chi tiết của bệnh nhân từ patientId
+	       User patient = userService.get(patientId);
+	       // Lấy danh sách lịch khám của bệnh nhân
+	       List<Appointment> appointments = appointmentUserLogin.getAppointmentsByPatientId(patientId);
+	       // Lấy danh sách lịch tái khám của bệnh nhân
+	       List<FollowUpAppointment> followUpAppointments = followUpAppointmentService.getAppointmentsByPatientId(patientId);
+	       List<MedicalAndMedicineRecordDTO> medicalAndMedicineRecordDTOs = medicineRecordService.getAllMedicalAndMedicineRecordsByUserId(patientId);	       // Truyền thông tin chi tiết của bệnh nhân và các lịch khám, tái khám vào model
+	       model.addAttribute("patient", patient);
+	       model.addAttribute("appointments", appointments);
+	       model.addAttribute("followUpAppointments", followUpAppointments);
+	       model.addAttribute("records", medicalAndMedicineRecordDTOs);
+	       
+	       // Trả về template hoặc fragment để hiển thị thông tin chi tiết của bệnh nhân
+	       return "patient-details"; // Thay thế "patient-details" bằng tên template của bạn
+	   }
+	   @GetMapping("/newAppointment/{id}")
+		public String showdsadas(@PathVariable("id") Long id, Model model) {
+		    // Lấy thông tin cuộc hẹn từ ID
+		    Optional<ScheduleItem> followUpAppointmentOptional = Optional.of(scheduleItemService.getScheduleItemById(id));
+		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		       String username = authentication.getName();
+		       
+		       // Lấy thông tin về patientUser từ username
+		       User patientUser = userRepository.findByEmail(username);
+		       
+		    // Kiểm tra xem followUpAppointmentOptional có giá trị không trước khi truy cập
+		    if (followUpAppointmentOptional.isPresent()) {
+		        ScheduleItem followUpAppointment = followUpAppointmentOptional.get();
+
+		        // Tạo một đối tượng FollowUpAppointment mới để truyền vào form
+		        Appointment formFollowUpAppointment = new Appointment();
+		        formFollowUpAppointment.setPatientUser(patientUser);
+		        formFollowUpAppointment.setDoctor(followUpAppointment.getDoctor());
+		        formFollowUpAppointment.setAppointmentDate(followUpAppointment.getWorkdates());
+		        formFollowUpAppointment.setSpecialties(followUpAppointment.getDoctor().getSpecialty());
+		        formFollowUpAppointment.setAppointmentPeriod(followUpAppointment.getAppointmentPeriod());
+
+		        model.addAttribute("appointment", formFollowUpAppointment);
+
+		        return "newAppointmentgetdoctor"; // Trả về view để hiển thị form
+		    } else {
+		        // Xử lý trường hợp không tìm thấy cuộc hẹn
+		        return "redirect:/error"; // Chuyển hướng đến trang lỗi
+		    }
+		}
+	   @PostMapping("/newAppointment")
+	   public String createAppointmentgetdoctor(@RequestParam("doctorId") Long doctorId,@RequestParam("pattientId") Long pattientId,
+	                                             @RequestParam("appointmentDate") LocalDate appointmentDate,
+	                                             @RequestParam("appointmentPeriod") Period appointmentPeriod,
+	                                             @RequestParam("specialtyId") Long specialtyId,
+	                                             @RequestParam("symptoms") String symptoms, Model model) {
+	       // Chuyển đổi chuỗi appointmentPeriodStr thành enum Period
+	      
+		   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	       String username = authentication.getName();
+	       
+	       // Lấy thông tin về patientUser từ username
+	       User patientUser = userRepository.findByEmail(username);
+	     
+	       
+	       // Lấy đối tượng Specialty từ specialtyId
+	       Specialty specialty = appointmentRepository.findSpecialtyById(specialtyId);
+	       if (specialty == null) {
+	           throw new IllegalArgumentException("Specialty not found");
+	       }
+
+	    
+	       User doctor = userRepository.findById(doctorId)
+                   .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+	       User paUser = userRepository.findById(pattientId).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+	       // Giới hạn số lượng cuộc hẹn cho mỗi người dùng
+	       long appointmentCount = appointmentRepository.countByPatientUserAndCreateOn(patientUser,LocalDate.now());
+
+		     //Giới hạn số lượng cuộc hẹn cho mỗi người dùng
+		    if (appointmentCount >=1) {
+		        model.addAttribute("error", "Bạn chỉ được gửi một cuộc hẹn mỗi ngày.");
+		        return "error/error"; // Thay 'error_view' bằng tên view bạn muốn hiển thị thông báo lỗi
+		    }else {
+	           Appointment appointment = new Appointment();
+	           appointment.setSpecialties(specialty);
+	           appointment.setPatientUser(paUser);
+	           appointment.setDoctor(doctor);
+	           appointment.setAppointmentDate(appointmentDate);
+	           appointment.setAppointmentPeriod(appointmentPeriod);
+	           appointment.setSymptoms(symptoms);
+
+	           // Lưu đối tượng Appointment vào cơ sở dữ liệu
+	           appointmentRepository.save(appointment);
+
+	           // Chuyển hướng sang trang listAppointmentUserLogin sau khi tạo cuộc hẹn thành công
+	           return "apps/appointmentNoLogin/dangkysuccess";
+       }
+	   }
+}
+
+
+

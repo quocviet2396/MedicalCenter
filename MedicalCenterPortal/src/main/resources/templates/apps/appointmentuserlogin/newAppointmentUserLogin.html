@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký khám</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<!-- Nice Select CSS -->
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<!-- icofont CSS -->
+<link rel="stylesheet" href="/assets/css/icofont.css">
+<!-- Slicknav -->
+<link rel="stylesheet" href="/assets/css/slicknav.min.css">
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="/assets/css/owl-carousel.css">
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="/assets/css/datepicker.css">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="/assets/css/animate.min.css">
+<!-- Magnific Popup CSS -->
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+
+<!-- Medipro CSS -->
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container1 {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="date"],
+        select,
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"],
+        .back-to-home-link {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            text-decoration: none;
+            text-align: center;
+            width: 150px;
+        }
+
+        button[type="submit"]:hover,
+        .back-to-home-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+	<header th:replace="fragments/header_frontend :: header">&nbsp;</header>
+						<!-- SignIn-Out -->
+						<div class="col-lg-2 col-12">
+							<div class="get-quote">
+							
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+	</header>
+<div class="container1">
+    <h1 class="page-title">Get appointment</h1>
+    <form action="/appointmentUserLogin/save" th:object="${appointment}" method="post"onsubmit="return validateForm()">
+
+        <div>
+            <label for="appointmentDate">Appointment date:</label>
+            <input type="date" id="appointmentDate" th:field="*{appointmentDate}" />
+        </div>
+
+       <div class="form-group">
+    <label for="specialtyId">Specialty: </label>
+    <select class="form-control" id="specialtyId" name="specialtyId" required>
+        <option value="">Specialty</option>
+        <!-- Thêm các option từ danh sách specialties -->
+        <th:block th:each="specialty : ${specialties}">
+            <option th:value="${specialty.id}" th:text="${specialty.nameSpecialty}"></option>
+        </th:block>
+    </select>
+</div>
+
+
+        <div>
+            <label for="appointmentPeriod">Appointment period:</label>
+            
+            <select id="appointmentPeriod" th:field="*{appointmentPeriod}" required>
+            	<option value="" >Period</option>
+                <option th:each="period : ${T(com.medicalcenter.enums.Period).values()}" th:value="${period}" th:text="${period}" ></option>
+            </select>
+        </div>
+
+        <div>
+            <label for="symptoms">Symptom:</label>
+            <textarea id="symptoms" th:field="*{symptoms}" required></textarea>
+        </div>
+        <button type="submit">Send</button>
+    </form>
+    
+</div>
+	<footer th:replace="fragments/footer_frontend :: footer"> </footer>
+
+</body>
+<script>
+    function validateForm() {
+        var appointmentDateInput = document.getElementById("appointmentDate");
+        var appointmentDateValue = appointmentDateInput.value;
+
+        var today = new Date();
+        var vietnamTimeOffsetInMinutes = 7 * 60; // Múi giờ của Việt Nam là UTC+7
+        var vietnamTimeOffsetInMilliseconds = vietnamTimeOffsetInMinutes * 60 * 1000;
+
+        var vietnamTime = new Date(today.getTime() + vietnamTimeOffsetInMilliseconds);
+
+        var selectedDate = new Date(appointmentDateValue);
+
+        if (selectedDate < vietnamTime) {
+            alert("Ngày khám không được nhỏ hơn ngày và giờ hiện tại.");
+            return false; // Ngăn form được submit
+        }
+
+        return true; // Cho phép form được submit
+    }
+</script>
+
+
+</html>

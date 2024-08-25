@@ -1,0 +1,49 @@
+package com.medicalcenterportal.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.medicalcenter.entities.ScheduleItem;
+import com.medicalcenter.entities.User;
+import com.medicalcenter.enums.Period;
+
+
+public interface ScheduleItemRepository extends JpaRepository<ScheduleItem, Long>{
+	 @Query("SELECT s FROM ScheduleItem s WHERE s.doctor.id = :doctorId")
+	    List<ScheduleItem> findByDoctorId(Long doctorId);
+	 @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = ?1")
+	    List<User> findAllByDoctorRoleName(String roleName);
+	 @Query("SELECT DISTINCT s.doctor FROM ScheduleItem s " +
+		       "JOIN s.doctor u " +
+		       "JOIN u.roles r " +
+		       
+		       "WHERE s.workdates = :appointmentDate " + // Sửa tên tham số và xóa khoảng trống không cần thiết
+		       "AND s.appointmentPeriod = :appointmentPeriod " +
+		       "AND u.specialty.id = :specialtyId " +
+		       "AND r.name = 'DOCTOR'")
+		List<User> findDoctorsByWorkdateAndAppointmentPeriodAndSpecialty(
+		    @Param("appointmentDate") LocalDate appointmentDate,
+		    @Param("appointmentPeriod") Period appointmentPeriod,
+		    @Param("specialtyId") Long specialtyId
+		);
+	  List<ScheduleItem> findByDoctor(User doctor);
+	  boolean existsByDoctorAndWorkdatesAndRoomAndAppointmentPeriod(User doctor, LocalDate workDate, String room, Period appointmentPeriod);
+
+
+
+	  @Query("SELECT s FROM ScheduleItem s WHERE s.workdates = :workdate")
+	    List<ScheduleItem> findByWorkdates(@Param("workdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate workdate);
+	  @Query("SELECT si FROM ScheduleItem si " +
+	           "JOIN si.doctor d " +
+	           "JOIN d.specialty sp " +
+	           "WHERE si.workdates = :workdate " +
+	           "AND sp.nameSpecialty = :specialty")
+	    List<ScheduleItem> findByWorkdateAndDoctorSpecialtyNameSpecialty(@Param("workdate") LocalDate workdates, @Param("specialty") String specialty);
+
+
+}

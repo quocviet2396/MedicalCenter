@@ -1,0 +1,121 @@
+package com.me.dto;
+
+import java.time.LocalDateTime;
+
+public class MedicalAndMedicineRecordDTO {
+    private Long id; 
+    private String medicineName; 
+    private String form; 
+    private String note; 
+    private String quantity; 
+    private String description; 
+    private LocalDateTime lastVisitDate; 
+    private LocalDateTime followUpDate; 
+    private String patientName; 
+    private String doctorName; 
+    
+  
+
+    public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
+	}
+
+	public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    public void setMedicineName(String medicineName) {
+        this.medicineName = medicineName;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getLastVisitDate() {
+        return lastVisitDate;
+    }
+
+    public void setLastVisitDate(LocalDateTime lastVisitDate) {
+        this.lastVisitDate = lastVisitDate;
+    }
+
+    public LocalDateTime getFollowUpDate() {
+        return followUpDate;
+    }
+
+    public void setFollowUpDate(LocalDateTime followUpDate) {
+        this.followUpDate = followUpDate;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+   
+   
+	public MedicalAndMedicineRecordDTO(Long id, String medicineName, String form, String note, String quantity,
+			String description, LocalDateTime lastVisitDate, LocalDateTime followUpDate, String patientName,
+			String doctorName) {
+		super();
+		this.id = id;
+		this.medicineName = medicineName;
+		this.form = form;
+		this.note = note;
+		this.quantity = quantity;
+		this.description = description;
+		this.lastVisitDate = lastVisitDate;
+		this.followUpDate = followUpDate;
+		this.patientName = patientName;
+		this.doctorName = doctorName;
+	}
+
+	public MedicalAndMedicineRecordDTO() {
+        super();
+        // TODO Auto-generated constructor stub
+    }    
+}

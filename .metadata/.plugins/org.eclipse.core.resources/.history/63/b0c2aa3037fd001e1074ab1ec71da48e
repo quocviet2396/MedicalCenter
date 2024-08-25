@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Schedule Item</title>
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0 auto;
+            padding: 20px;
+            width: 60%;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Edit Schedule Item</h2>
+    <form action="#" th:action="@{/scheduleofdoctor/update/{id}(id=${scheduleItem.id})}" th:object="${scheduleItem}" method="post">
+        <!-- Một số trường dữ liệu để chỉnh sửa -->
+        <div>
+            <label for="doctor">Doctor:</label>
+            <select id="doctor" name="doctor" th:field="*{doctor}">
+                <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName + ' - ' + doctor.specialty.nameSpecialty}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="workdates">Work date:</label>
+            <input type="date" id="workdates" name="workdates" th:value="*{workdates}" required>
+        </div>
+          <br>
+        <label for="room">Phòng:</label>
+        <input type="text" id="room" th:field="*{room}" />
+        <br>
+        <div>
+            <label for="appointmentPeriod">Khoảng thời gian:</label>
+        <select th:field="*{appointmentPeriod}">
+    <option th:each="period : ${T(com.medicalcenter.enums.Period).values()}"
+            th:value="${period}" th:text="${#strings.capitalize(period.name().toLowerCase())}"></option>
+            </select>
+        </div>
+        <!-- Các trường dữ liệu khác -->
+        <button type="submit">Lưu</button>
+    </form>
+</body>
+</html>

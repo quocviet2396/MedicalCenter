@@ -1,0 +1,188 @@
+<!doctype html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="keywords" content="Site keywords here">
+<meta name="description" content="">
+<meta name='copyright' content=''>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Title -->
+<title>Medical Center</title>
+
+<!-- Favicon -->
+<link rel="icon" href="/assets/img/favicon.png">
+
+<!-- Google Fonts -->
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap"
+	rel="stylesheet">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<!-- Nice Select CSS -->
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<!-- icofont CSS -->
+<link rel="stylesheet" href="/assets/css/icofont.css">
+<!-- Slicknav -->
+<link rel="stylesheet" href="/assets/css/slicknav.min.css">
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="/assets/css/owl-carousel.css">
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="/assets/css/datepicker.css">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="/assets/css/animate.min.css">
+<!-- Magnific Popup CSS -->
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+
+<!-- Medipro CSS -->
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+
+</head>
+<body>
+
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="loader">
+			<div class="loader-outter"></div>
+			<div class="loader-inner"></div>
+
+			<div class="indicator">
+				<svg width="16px" height="12px">
+                        <polyline id="back"
+						points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+                        <polyline id="front"
+						points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+                    </svg>
+			</div>
+		</div>
+	</div>
+	<!-- End Preloader -->
+
+	<!-- Header Area -->
+	<header th:replace="fragments/header_frontend :: header">&nbsp;</header>
+	<!-- End Header Area -->
+	<!-- Slider Area -->
+	<!-- Header slider -->
+	<div class="breadcrumbs overlay">
+		<div class="container">
+			<div class="bread-inner">
+				<div class="row">
+					<div class="col-12">
+						<h2>Doctor Details</h2>
+						<ul class="bread-list">
+							<li><a th:href="@{/}">Home</a></li>
+							<li><i class="icofont-simple-right"></i></li>
+							<li class="active">Doctor Details</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End header slider -->
+
+	<div class="doctor-details-area section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-5">
+					<div class="doctor-details-item doctor-details-left">
+						<img th:src="@{/files/} + ${doctorInfo.photo}"
+						style="width: 457px; height: 537px;" alt="#">
+						<div class="doctor-details-contact">
+
+							<ul class="social">
+								<li><a href="#"><i class="icofont-facebook"></i></a></li>
+								<li><a href="#"><i class="icofont-google-plus"></i></a></li>
+								<li><a href="#"><i class="icofont-twitter"></i></a></li>
+								<li><a href="#"><i class="icofont-vimeo"></i></a></li>
+								<li><a href="#"><i class="icofont-pinterest"></i></a></li>
+							</ul>
+
+							<div class="doctor-details-work">
+								<h3>Working hours</h3>
+								<ul class="time-sidual">
+									<li class="day">Monday - Saturday <span>8:00-17:30</span></li>
+									<li class="day">Sunday <span>8:00-11:30</span></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-7">
+					<div class="doctor-details-item">
+						<div class="doctor-details-right">
+							<div class="doctor-name">
+								<h3 class="name" th:text="${doctorInfo.title}"></h3>
+								<h5 th:text="${doctorInfo.specialty.nameSpecialty}" style="color:blue"></h5>
+								<p class="degree">MedicalCenter: 590 Cach Mang Thang Tam, district 3, Ho Chi Minh City.</p>
+							</div>
+							<div class="doctor-details-biography" th:utext="${doctorInfo.content}">
+								 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End slider -->
+	<!-- Footer Area -->
+	<footer th:replace="fragments/footer_frontend :: footer"> </footer>
+	<!--/ End Footer Area -->
+
+	<!-- jquery Min JS -->
+	<script src="/assets/js/jquery.min.js"></script>
+	<!-- jquery Migrate JS -->
+	<script src="/assets/js/jquery-migrate-3.0.0.js"></script>
+	<!-- jquery Ui JS -->
+	<script src="/assets/js/jquery-ui.min.js"></script>
+	<!-- Easing JS -->
+	<script src="/assets/js/easing.js"></script>
+	<!-- Color JS -->
+	<script src="/assets/js/colors.js"></script>
+	<!-- Popper JS -->
+	<script src="/assets/js/popper.min.js"></script>
+	<!-- Bootstrap Datepicker JS -->
+	<script src="/assets/js/bootstrap-datepicker.js"></script>
+	<!-- Jquery Nav JS -->
+	<script src="/assets/js/jquery.nav.js"></script>
+	<!-- Slicknav JS -->
+	<script src="/assets/js/slicknav.min.js"></script>
+	<!-- ScrollUp JS -->
+	<script src="/assets/js/jquery.scrollUp.min.js"></script>
+	<!-- Niceselect JS -->
+	<script src="/assets/js/niceselect.js"></script>
+	<!-- Tilt Jquery JS -->
+	<script src="/assets/js/tilt.jquery.min.js"></script>
+	<!-- Owl Carousel JS -->
+	<script src="/assets/js/owl-carousel.js"></script>
+	<!-- counterup JS -->
+	<script src="/assets/js/jquery.counterup.min.js"></script>
+	<!-- Steller JS -->
+	<script src="/assets/js/steller.js"></script>
+	<!-- Wow JS -->
+	<script src="/assets/js/wow.min.js"></script>
+	<!-- Magnific Popup JS -->
+	<script src="/assets/js/jquery.magnific-popup.min.js"></script>
+	<!-- Counter Up CDN JS -->
+	<script
+		src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="/assets/js/bootstrap.min.js"></script>
+	<!-- Main JS -->
+	<script src="/assets/js/main.js"></script>
+
+	<!--begin::Javascript-->
+	<div th:replace="fragments/partial :: global_script"></div>
+
+	<!--end::Javascript-->
+</body>
+</html>

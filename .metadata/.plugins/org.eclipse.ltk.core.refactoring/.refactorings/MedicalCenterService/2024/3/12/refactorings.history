@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;MedicalCenterService/src/main/java/com/medicalcenter/repositories/SpecialtyRepository&apos; to &apos;SpecialtyRepository.java&apos;" description="Rename resource &apos;SpecialtyRepository&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/java/com/medicalcenter/repositories/SpecialtyRepository" name="SpecialtyRepository.java" stamp="1711075927363" updateReferences="true"/>
+</session>

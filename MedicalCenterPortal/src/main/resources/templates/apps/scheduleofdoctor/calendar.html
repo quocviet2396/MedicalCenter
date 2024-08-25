@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--begin::Head-->
+
+<head th:replace="fragments/partial :: page_head('New User', 'none')" />
+<style>
+   body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f7f7f7;
+}
+
+.calendar {
+  max-width: 800px;
+  margin: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  background-color: #f2f2f2;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-top: 1px solid #ccc;
+}
+
+.calendar-day {
+  padding: 30px;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  position: relative;
+}
+
+.today {
+  background-color: #f0f0f0;
+}
+
+.work-day-info {
+ osition: absolute;
+    bottom: -5px;
+    left: 5px;
+    font-size: 9px;
+    color: red;
+}
+
+#prevBtn,
+#nextBtn {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+#prevBtn:hover,
+#nextBtn:hover {
+  color: #333;
+}
+
+.work-day-info {
+  position: relative;
+  margin-top: 5px;
+}
+
+.work-day-info + .work-day-info::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 50%;
+  height: 5px;
+}
+
+  </style>
+<!--end::Head-->
+<!--begin::Body-->
+
+<body data-kt-name="metronic" id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
+	data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
+	data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true"
+	data-kt-app-toolbar-enabled="true" class="app-default">
+	<!--begin::Theme mode setup on page load-->
+	<script>
+		if (document.documentElement) {
+			const defaultThemeMode = "system";
+			const name = document.body.getAttribute("data-kt-name");
+			let themeMode = localStorage.getItem(
+				"kt_" + (name !== null ? name + "_" : "") + "theme_mode_value"
+			);
+			if (themeMode === null) {
+				if (defaultThemeMode === "system") {
+					themeMode = window.matchMedia("(prefers-color-scheme: dark)")
+						.matches
+						? "dark"
+						: "light";
+				} else {
+					themeMode = defaultThemeMode;
+				}
+			}
+			document.documentElement.setAttribute("data-theme", themeMode);
+		}
+	</script>
+	<!--end::Theme mode setup on page load-->
+	<!--begin::App-->
+	<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+		<!--begin::Page-->
+		<div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+			<div th:replace="fragments/header :: header">&nbsp;</div>
+			<!--begin::Wrapper-->
+			<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+				<div th:replace="fragments/sidebar :: sidebar"></div>
+				<!--begin::Main-->
+				<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+					<!--begin::Content wrapper-->
+					<div class="d-flex flex-column flex-column-fluid">
+						<!--begin::Toolbar-->
+						<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+							<!--begin::Toolbar container-->
+							<div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+								<!--begin::Page title-->
+								<div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+									<!--begin::Title-->
+									<h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
+										
+									</h1>
+									<!--end::Title-->
+									<!--begin::Breadcrumb-->
+									<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+										<!--begin::Item-->
+										<li class="breadcrumb-item text-muted">
+											<a th:href="@{/appointmentUserLogin/list}" class="text-muted text-hover-primary"></a>
+										</li>
+										<!--end::Item-->
+										<!--begin::Item-->
+										
+										<!--end::Item-->
+										<!--begin::Item-->
+										
+										<!--end::Item-->
+									</ul>
+									<!--end::Breadcrumb-->
+								</div>
+								<!--end::Page title-->
+							</div>
+							<!--end::Toolbar container-->
+						</div>
+						<!--end::Toolbar-->
+						<!--begin::Content-->
+						<div id="kt_app_content" class="app-content flex-column-fluid">
+							<!--begin::Content container-->
+							
+								<!--begin::Basic info-->
+								<div class="card mb-5 mb-xl-10">
+									<!--begin::Card header-->
+									<div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse"
+										data-bs-target="#kt_account_profile_details" aria-expanded="true"
+										aria-controls="kt_account_profile_details">
+										<!--begin::Card title-->
+										
+										<!--end::Card title-->
+									</div>
+									<!--begin::Card header-->
+									<!--begin::Content-->
+									<div id="kt_account_settings_profile_details" class="collapse show">
+										<!--begin::Form Trung3T -->
+										<div class="calendar">
+    <div class="calendar-header">
+      <button id="prevBtn">&lt;</button>
+      <h2 id="monthYear">March 2024</h2>
+      <button id="nextBtn">&gt;</button>
+    </div>
+    <script id="scheduleItemsJson" type="application/json">
+  
+ [(${scheduleItemsJson})]
+</script>
+    <div class="calendar-body" id="calendarBody">
+      <!-- Calendar days will be inserted here dynamically -->
+    </div>
+  </div>
+
+									</div>
+									<!--end::Content-->
+								</div>
+								<!--end::Basic info-->
+							</div>
+							<!--end::Content container-->
+						</div>
+						<!--end::Content-->
+					</div>
+					<!--end::Content wrapper-->
+					<!--begin::Footer-->
+					<div th:replace="fragments/footer :: footer">&nbsp;</div>
+					<!--end::Footer-->
+				</div>
+				<!--end:::Main-->
+			</div>
+			<!--end::Wrapper-->
+		</div>
+		<!--end::Page-->
+	</div>
+	<!--end::App-->
+	<!--begin::Scrolltop-->
+	<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+		<!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+		<span class="svg-icon">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor" />
+				<path
+					d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z"
+					fill="currentColor" />
+			</svg>
+		</span>
+		<!--end::Svg Icon-->
+	</div>
+	<!--end::Scrolltop-->
+	<!--begin::Javascript-->
+	<div th:replace="fragments/partial :: global_script"></div>
+	<div th:replace="fragments/partial :: users_script"></div>
+	<!--end::Javascript-->
+</body>
+<!--end::Body-->
+ <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	var scheduleItemsString = document.getElementById("scheduleItemsJson").textContent;
+    	var scheduleItems = JSON.parse(scheduleItemsString);
+    	console.log(scheduleItemsJson);
+
+
+    	    console.log("scheduleItemsString:", scheduleItemsString); // In ra giá trị của scheduleItemsString
+    	    var scheduleItems = JSON.parse(scheduleItemsString);
+    	    console.log(scheduleItems);
+
+      var calendar = document.getElementById('calendar');
+      var currentDateLabel = document.getElementById('currentDateLabel');
+      var prevMonthBtn = document.getElementById('prevBtn');
+      var nextMonthBtn = document.getElementById('nextBtn');
+
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const monthYear = document.getElementById("monthYear");
+      const calendarBody = document.getElementById("calendarBody");
+
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
+      renderCalendar(currentYear, currentMonth);
+
+      prevBtn.addEventListener("click", function() {
+        currentMonth -= 1;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear -= 1;
+        }
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      nextBtn.addEventListener("click", function() {
+        currentMonth += 1;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear += 1;
+        }
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      function renderWorkDays(year, month) {
+    	    scheduleItems.forEach(function(item) {
+    	        var itemDate = new Date(item.workdates);
+    	        if (itemDate.getFullYear() === year && itemDate.getMonth() === month) {
+    	            var dayCell = calendarBody.querySelector('[data-day="' + itemDate.getDate() + '"]');
+    	            if (dayCell) {
+    	                // Tạo một phần tử div mới để chứa thông tin về workdates, appointmentPeriod, và room
+    	                var workInfo = document.createElement('div');
+    	                workInfo.classList.add('work-day-info');
+
+    	                // Hiển thị thông tin về workdates, appointmentPeriod, và room
+    	                workInfo.textContent = item.appointmentPeriod + ', Phòng: ' + item.room;
+
+    	                dayCell.appendChild(workInfo);
+
+    	                // Nếu có thêm thông tin về buổi làm việc thứ hai
+    	                if (item.anotherAppointmentPeriod) {
+    	                    var secondWorkInfo = document.createElement('div');
+    	                    secondWorkInfo.classList.add('work-day-info');
+    	                    secondWorkInfo.textContent = item.anotherAppointmentPeriod + + ', Phòng: ' +item.room;
+    	                    dayCell.appendChild(secondWorkInfo);
+    	                }
+    	            }
+    	        }
+    	    });
+    	}
+
+
+      function renderCalendar(year, month) {
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        monthYear.textContent = new Date(year, month).toLocaleString('default', { month: 'long' }) + " " + year;
+
+        calendarBody.innerHTML = '';
+
+        // Insert blank cells for days before the first day of the month
+        for (let i = 0; i < firstDayOfMonth; i++) {
+          const blankCell = document.createElement('div');
+          blankCell.classList.add('calendar-day');
+          calendarBody.appendChild(blankCell);
+        }
+
+        // Insert cells for each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const cell = document.createElement('div');
+          cell.textContent = day;
+          cell.classList.add('calendar-day');
+          cell.setAttribute('data-day', day); // Add data attribute to identify the day
+          if (year === new Date().getFullYear() && month === new Date().getMonth() && day === new Date().getDate()) {
+            cell.classList.add('today');
+          }
+          calendarBody.appendChild(cell);
+        }
+
+        renderWorkDays(year, month); // Call renderWorkDays to display work day info
+      }
+    });
+  </script>
+</html>

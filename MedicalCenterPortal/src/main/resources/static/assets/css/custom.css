@@ -1,0 +1,46 @@
+.global-breadcrumb ol li a:hover{
+    text-decoration: underline;
+	color: #00379b;
+}
+
+.global-breadcrumb ol li span:hover {
+	text-decoration: underline;
+	color: #00379b;
+}	
+
+.medical-answer .anwser-question a{
+    color: #00379b;
+}
+
+.medical-answer .anwser-question a:hover{
+    color: #00379b;
+	text-decoration: underline;
+}
+
+.medical-answer .anwser-question span a{
+    color: #00379b;
+}
+
+.medical-answer .anwser-question span a:hover{
+    color: #00379b;
+	text-decoration: underline;
+}
+
+.medical-answer .anwser-question a span{
+    color: #00379b;
+}
+
+.medical-answer .anwser-question a:hover span{
+    color: #00379b;
+	text-decoration: underline;
+}
+
+.news-detail-page a{
+    color: #00379b;
+    font-weight: bolder;
+}
+
+.news-detail-page a:hover{
+    color: #00379b;
+    text-decoration: underline;
+}

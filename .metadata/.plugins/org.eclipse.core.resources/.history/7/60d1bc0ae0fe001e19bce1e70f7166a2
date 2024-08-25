@@ -1,0 +1,202 @@
+package com.medicalcenterportal.apis;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import com.medicalcenter.dto.MedicalAndMedicineRecordDTO;
+import com.medicalcenter.entities.Appointment;
+import com.medicalcenter.entities.FollowUpAppointment;
+import com.medicalcenter.entities.Role;
+import com.medicalcenter.entities.ScheduleItem;
+import com.medicalcenter.entities.Specialty;
+import com.medicalcenter.entities.User;
+
+import com.medicalcenter.exceptions.UserNotFoundException;
+import com.medicalcenter.repositories.SpecialtyRepository;
+import com.medicalcenter.repositories.UserRepository;
+import com.medicalcenter.services.MedicineRecordService;
+import com.medicalcenter.services.RoleService;
+import com.medicalcenter.services.SpecialtyService;
+import com.medicalcenter.services.UserService;
+import com.medicalcenterportal.dtos.JwtResponse;
+import com.medicalcenterportal.repository.AppointmentRepository;
+import com.medicalcenterportal.security.AppUserDetails;
+import com.medicalcenterportal.services.AppointmentUserLogin;
+import com.medicalcenterportal.services.ScheduleItemService;
+import com.mysql.cj.protocol.x.Ok;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+
+@RestController
+@RequestMapping("/apis/v1/appointmentUserLogin")
+public class AppointmentUserLoginApiController {
+
+    @Autowired
+    private AppointmentUserLogin appointmentUserLogin;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ScheduleItemService scheduleItemService;
+   
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private SpecialtyService specialtyService;
+    @Autowired 
+    RoleService roleService;
+    @Autowired
+    MedicineRecordService medicineRecordService;
+
+    @GetMapping("/listm")
+    public ResponseEntity<List<MedicalAndMedicineRecordDTO>> getMedicalRecords() throws UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AppUserDetails) {
+            AppUserDetails loggedUser = (AppUserDetails) authentication.getPrincipal();
+            Long userId = loggedUser.getId();
+            List<MedicalAndMedicineRecordDTO> records = medicineRecordService.getAllMedicalAndMedicineRecordsByUserId(userId);
+            return new ResponseEntity<>(records, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+    
+    @GetMapping("/listFollowUp")
+    public ResponseEntity<List<FollowUpAppointment>> listFollowUp(Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+        if (user == null) {
+        	 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<FollowUpAppointment> followUpAppointments = followUpAppointmentService.findByPatientUser(user);
+        return ResponseEntity.ok(followUpAppointments);
+    }
+
+    @GetMapping("/schedule-items")
+    public List<ScheduleItem> getScheduleItemList(
+            @RequestParam(name = "workdates", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate workdate,
+            @RequestParam(name = "specialty", required = false) String specialty) {
+        if (workdate == null) {
+            workdate = LocalDate.now(); // Lấy ngày hiện tại nếu không có workdate được chỉ định
+        }
+
+        // Lấy danh sách lịch làm việc dựa trên workdate và specialty (nếu được chỉ định)
+        return specialty != null && !specialty.isEmpty() ?
+                scheduleItemService.getScheduleItemsByWorkdateAndSpecialty(workdate, specialty) :
+                scheduleItemService.getScheduleItemsByWorkdate(workdate);
+    }
+    @GetMapping("/listspecialty")
+    public ResponseEntity<List<Specialty>> getAllSpecialties() {
+        List<Specialty> specialties = specialtyService.getAllSpecialty();
+        return new ResponseEntity<>(specialties, HttpStatus.OK);
+    }
+
+   
+    @GetMapping("/list")
+    public ResponseEntity<List<Appointment>> listAppointments(Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<Appointment> appointments = appointmentUserLogin.getAppointmentsByPatientUser(user);
+        return ResponseEntity.ok(appointments);
+    }
+
+  
+   
+    @PostMapping("/save")
+    public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User patientUser = userRepository.findByEmail(username);
+        appointment.setPatientUser(patientUser);
+
+        // Validate and save the appointment
+        // Here you can add validation logic before saving the appointment
+        appointmentRepository.save(appointment);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Appointment created successfully!");
+    }
+
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> showEditAppointmentForm(@PathVariable("id") Long id) {
+        Optional<Appointment> optionalAppointment = appointmentUserLogin.getAppointmentById(id);
+        if (optionalAppointment.isPresent()) {
+            Appointment appointment = optionalAppointment.get();
+            // You can add additional logic here if needed
+            return ResponseEntity.ok(appointment);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateAppointment(@PathVariable("id") Long id, @RequestBody Appointment appointment) {
+        appointmentUserLogin.updateAppointment(id, appointment);
+        return ResponseEntity.ok("Appointment updated successfully!");
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAppointment(@PathVariable("id") Long id) {
+        appointmentUserLogin.deleteAppointment(id);
+        return ResponseEntity.ok("Appointment deleted successfully!");
+    }
+
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<?> patientDetails(@PathVariable("patientId") Long patientId) throws UserNotFoundException {
+        User patient = userService.get(patientId);
+        List<Appointment> appointments = appointmentUserLogin.getAppointmentsByPatientId(patientId);
+        // You can customize the response as needed
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/newAppointment/{id}")
+    public ResponseEntity<?> showNewAppointmentForm(@PathVariable("id") Long id) {
+        Optional<ScheduleItem> followUpAppointmentOptional = Optional.of(scheduleItemService.getScheduleItemById(id));
+        if (followUpAppointmentOptional.isPresent()) {
+            ScheduleItem followUpAppointment = followUpAppointmentOptional.get();
+            // Create a new appointment object and set required fields
+            Appointment formFollowUpAppointment = new Appointment();
+            formFollowUpAppointment.setDoctor(followUpAppointment.getDoctor());
+            formFollowUpAppointment.setAppointmentDate(followUpAppointment.getWorkdates());
+            formFollowUpAppointment.setSpecialties(followUpAppointment.getDoctor().getSpecialty());
+            formFollowUpAppointment.setAppointmentPeriod(followUpAppointment.getAppointmentPeriod());
+            return ResponseEntity.ok(formFollowUpAppointment);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/newAppointment")
+    public ResponseEntity<?> createAppointments(@RequestBody Appointment appointment) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User patientUser = userRepository.findByEmail(username);
+        appointment.setPatientUser(patientUser);
+
+        // Validate and save the appointment
+        // Here you can add validation logic before saving the appointment
+        appointmentRepository.save(appointment);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Appointment created successfully!");
+    }
+}

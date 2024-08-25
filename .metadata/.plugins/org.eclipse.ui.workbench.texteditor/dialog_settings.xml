@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="PATIENT"/>
+		<item key="wrap" value="false"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="patient list"/>
+			<item value="patient"/>
+			<item value="thebag"/>
+			<item value="the bag"/>
+			<item value="the baf"/>
+			<item value="info"/>
+			<item value="hasErr"/>
+			<item value="blog"/>
+			<item value="logo"/>
+			<item value="medicine"/>
+			<item value="mobile"/>
+			<item value="metro"/>
+			<item value="me"/>
+			<item value="the"/>
+			<item value="model.addAttribute(&quot;listSpecialties&quot;, listSpecialties);"/>
+		</list>
+		<list key="replacehistory">
+			<item value="doctorInfo"/>
+			<item value="DoctorInfo"/>
+			<item value="Specialty"/>
+			<item value="nameSpecialty"/>
+			<item value=""/>
+			<item value="/assets/css/"/>
+			<item value="/assets/img/"/>
+			<item value="/assets/js/"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="14"/>
+		<item key="DIALOG_Y_ORIGIN" value="165"/>
+		<item key="DIALOG_WIDTH" value="511"/>
+		<item key="DIALOG_HEIGHT" value="523"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="567"/>
+		<item key="DIALOG_Y_ORIGIN" value="314"/>
+	</section>
+</section>
